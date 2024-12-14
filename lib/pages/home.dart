@@ -16,7 +16,7 @@ class _HomeState extends State<Home> {
 
     final route = ModalRoute.of(context);
     if (route != null) {
-      data = route.settings.arguments as Map;
+      data = data.isNotEmpty ? data : route.settings.arguments as Map;
     }
     // print(data);
 
@@ -39,8 +39,18 @@ class _HomeState extends State<Home> {
             child: Column(
               children: [
                 TextButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/location');
+                  onPressed: () async {
+                    dynamic result = await Navigator.pushNamed(context, '/location');
+                    if (result != null) {
+                      setState(() {
+                        data = {
+                          'location': result['location'],
+                          'flag': result['flag'],
+                          'time': result['time'],
+                          'isDaytime': result['isDaytime'],
+                        };
+                      });
+                    }
                   },
                   icon: Icon(
                     Icons.edit_location,
